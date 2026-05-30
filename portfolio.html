@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>John Moura — Especialista em Automação com IA</title>
+<meta name="description" content="Automação de processos e atendimento com IA usando n8n, WhatsApp e ChatGPT." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0f0d;
+    --bg-2:#111613;
+    --surface:#161c19;
+    --surface-2:#1b231f;
+    --border:#23302a;
+    --text:#e6f1ea;
+    --muted:#8a9a91;
+    --neon:#39ff14;
+    --neon-2:#7CFFB2;
+    --neon-glow:0 0 20px rgba(57,255,20,.35), 0 0 40px rgba(57,255,20,.15);
+    --radius:14px;
+    --maxw:1160px;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --sans:'Space Grotesk', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);
+    background:radial-gradient(1200px 600px at 80% -10%, rgba(57,255,20,.08), transparent 60%),
+               radial-gradient(900px 500px at -10% 30%, rgba(57,255,20,.05), transparent 60%),
+               var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .container{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .mono{font-family:var(--mono);letter-spacing:.02em}
+
+  /* NAV */
+  header.nav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:saturate(140%) blur(10px);
+    background:rgba(11,15,13,.7);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .logo{font-family:var(--mono);font-weight:700;font-size:1.05rem}
+  .logo span{color:var(--neon)}
+  nav ul{display:flex;gap:28px;list-style:none}
+  nav a{color:var(--muted);font-size:.92rem;transition:color .2s}
+  nav a:hover{color:var(--neon)}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 20px;border-radius:999px;font-weight:600;font-size:.95rem;
+    transition:transform .2s, box-shadow .2s, background .2s;
+    cursor:pointer;border:1px solid transparent;
+  }
+  .btn-primary{background:var(--neon);color:#04130a;box-shadow:var(--neon-glow)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(57,255,20,.55)}
+  .btn-ghost{border-color:var(--border);color:var(--text);background:transparent}
+  .btn-ghost:hover{border-color:var(--neon);color:var(--neon)}
+
+  /* HERO */
+  .hero{padding:96px 0 80px;position:relative;overflow:hidden}
+  .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:60px;align-items:center}
+  .tag{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:.78rem;
+    padding:6px 12px;border:1px solid var(--border);
+    border-radius:999px;color:var(--neon);background:rgba(57,255,20,.06)
+  }
+  .tag .dot{width:8px;height:8px;background:var(--neon);border-radius:50%;box-shadow:0 0 10px var(--neon);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  h1{
+    font-size:clamp(2.2rem, 5vw, 3.6rem);
+    line-height:1.08;letter-spacing:-.02em;margin:18px 0 18px;font-weight:700;
+  }
+  h1 .grad{
+    background:linear-gradient(135deg,var(--neon),var(--neon-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .lead{color:var(--muted);font-size:1.1rem;max-width:560px;margin-bottom:32px}
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-stats{display:flex;gap:32px;margin-top:48px}
+  .hero-stats .s strong{font-family:var(--mono);font-size:1.6rem;color:var(--neon);display:block}
+  .hero-stats .s span{color:var(--muted);font-size:.85rem}
+
+  /* Hero terminal card */
+  .terminal{
+    background:linear-gradient(180deg,var(--surface),var(--surface-2));
+    border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.6), 0 0 0 1px rgba(57,255,20,.08) inset;
+    overflow:hidden;
+  }
+  .term-head{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border);background:#0e1411}
+  .term-head .d{width:11px;height:11px;border-radius:50%;background:#2a3530}
+  .term-head .d.g{background:var(--neon);box-shadow:0 0 8px var(--neon)}
+  .term-head .title{margin-left:8px;font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+  .term-body{padding:20px;font-family:var(--mono);font-size:.86rem;color:#cfe9d9}
+  .term-body .ln{margin:6px 0}
+  .term-body .c{color:var(--muted)}
+  .term-body .k{color:var(--neon)}
+  .term-body .s{color:#9fd6ff}
+  .cursor{display:inline-block;width:9px;height:14px;background:var(--neon);vertical-align:middle;animation:blink 1s steps(2) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  /* SECTIONS */
+  section{padding:96px 0;position:relative}
+  .eyebrow{font-family:var(--mono);font-size:.78rem;color:var(--neon);letter-spacing:.18em;text-transform:uppercase}
+  h2{font-size:clamp(1.8rem,3.4vw,2.5rem);letter-spacing:-.02em;margin:10px 0 14px;font-weight:700}
+  .section-head{max-width:680px;margin-bottom:48px}
+  .section-head p{color:var(--muted)}
+
+  /* PROJECTS */
+  .projects{display:grid;grid-template-columns:1fr;gap:22px;max-width:780px;margin:0 auto}
+  .card{
+    background:linear-gradient(180deg,var(--surface),var(--surface-2));
+    border:1px solid var(--border);border-radius:var(--radius);
+    overflow:hidden;display:flex;flex-direction:column;
+    transition:transform .3s, border-color .3s, box-shadow .3s;
+  }
+  .card:hover{transform:translateY(-6px);border-color:rgba(57,255,20,.4);box-shadow:0 24px 50px -20px rgba(0,0,0,.6), 0 0 0 1px rgba(57,255,20,.15)}
+  .thumb{
+    aspect-ratio:16/10;background:
+      linear-gradient(135deg, rgba(57,255,20,.12), rgba(57,255,20,0) 60%),
+      repeating-linear-gradient(45deg, #131a16 0 12px, #0f1512 12px 24px);
+    border-bottom:1px solid var(--border);position:relative;display:flex;align-items:center;justify-content:center;
+  }
+  .thumb .play{
+    width:54px;height:54px;border-radius:50%;background:rgba(57,255,20,.12);border:1px solid var(--neon);
+    display:flex;align-items:center;justify-content:center;color:var(--neon);box-shadow:var(--neon-glow);
+  }
+  .thumb .ph{
+    position:absolute;top:12px;left:12px;font-family:var(--mono);font-size:.7rem;color:var(--muted);
+    padding:4px 8px;border:1px dashed var(--border);border-radius:6px;
+  }
+  .card-body{padding:22px;display:flex;flex-direction:column;gap:12px;flex:1}
+  .niche{font-family:var(--mono);font-size:.72rem;color:var(--neon);letter-spacing:.12em;text-transform:uppercase}
+  .card h3{font-size:1.2rem;letter-spacing:-.01em}
+  .card p{color:var(--muted);font-size:.94rem}
+  .metric{
+    margin-top:auto;padding:12px 14px;border:1px solid var(--border);border-radius:10px;
+    background:rgba(57,255,20,.04);display:flex;align-items:baseline;gap:10px;
+  }
+  .metric strong{font-family:var(--mono);color:var(--neon);font-size:1.15rem}
+  .metric span{color:var(--muted);font-size:.85rem}
+  .tags{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-family:var(--mono);font-size:.72rem;padding:4px 10px;border:1px solid var(--border);border-radius:999px;color:#c8d8d0}
+
+  /* TIMELINE */
+  .timeline{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+  .timeline::before{
+    content:"";position:absolute;top:28px;left:5%;right:5%;height:2px;
+    background:linear-gradient(90deg, transparent, var(--neon), transparent);opacity:.45;
+  }
+  .step{position:relative;text-align:center;padding:0 10px}
+  .step .num{
+    width:56px;height:56px;border-radius:50%;margin:0 auto 16px;
+    background:var(--surface);border:1px solid var(--neon);color:var(--neon);
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;
+    box-shadow:var(--neon-glow);position:relative;z-index:1;
+  }
+  .step h4{margin-bottom:6px}
+  .step p{color:var(--muted);font-size:.92rem}
+
+  /* TECH */
+  .tech{display:flex;flex-wrap:wrap;gap:12px}
+  .badge{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:12px 18px;border:1px solid var(--border);border-radius:12px;
+    background:var(--surface);font-family:var(--mono);font-size:.88rem;
+    transition:border-color .2s, transform .2s;
+  }
+  .badge:hover{border-color:var(--neon);transform:translateY(-2px)}
+  .badge .ico{
+    width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--neon),var(--neon-2));
+    display:inline-flex;align-items:center;justify-content:center;color:#04130a;font-weight:800;font-size:.72rem;
+  }
+
+  /* TESTIMONIALS */
+  .quotes{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .quote{
+    padding:30px;border:1px solid var(--border);border-radius:var(--radius);
+    background:linear-gradient(180deg,var(--surface),var(--surface-2));position:relative;
+  }
+  .quote::before{
+    content:"\201C";position:absolute;top:-10px;left:20px;font-size:4rem;color:var(--neon);
+    font-family:Georgia,serif;line-height:1;text-shadow:0 0 20px rgba(57,255,20,.4);
+  }
+  .quote p{color:#dfeee5;font-size:1.02rem;margin-bottom:18px}
+  .who{display:flex;align-items:center;gap:12px}
+  .who .av{
+    width:44px;height:44px;border-radius:50%;
+    background:linear-gradient(135deg,var(--neon),var(--neon-2));color:#04130a;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-family:var(--mono);
+  }
+  .who strong{display:block;font-size:.95rem}
+  .who span{color:var(--muted);font-size:.82rem}
+
+  /* CONTACT */
+  .contact-card{
+    text-align:center;padding:60px 28px;border:1px solid var(--border);border-radius:18px;
+    background:radial-gradient(600px 300px at 50% 0%, rgba(57,255,20,.12), transparent 60%), var(--surface);
+    position:relative;overflow:hidden;
+  }
+  .contact-card h2{margin-bottom:14px}
+  .contact-card p{color:var(--muted);max-width:560px;margin:0 auto 30px}
+  .contact-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  footer{padding:36px 0;border-top:1px solid var(--border);color:var(--muted);font-size:.86rem;text-align:center}
+
+  /* WhatsApp float */
+  .wa-float{
+    position:fixed;right:22px;bottom:22px;z-index:60;
+    width:58px;height:58px;border-radius:50%;background:var(--neon);color:#04130a;
+    display:flex;align-items:center;justify-content:center;box-shadow:var(--neon-glow);
+    transition:transform .2s;
+  }
+  .wa-float:hover{transform:scale(1.08)}
+
+  /* Reveal animation */
+  .reveal{opacity:1;transform:none;transition:opacity .7s ease, transform .7s ease}
+  .js .reveal{opacity:0;transform:translateY(24px)}
+  .js .reveal.in{opacity:1;transform:none}
+  .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
+
+  /* RESPONSIVE */
+  @media (max-width: 960px){
+    .hero-grid{grid-template-columns:1fr;gap:40px}
+    .projects{grid-template-columns:1fr 1fr}
+    .timeline{grid-template-columns:1fr 1fr}
+    .timeline::before{display:none}
+    .quotes{grid-template-columns:1fr}
+    nav ul{display:none}
+  }
+  @media (max-width: 600px){
+    .projects{grid-template-columns:1fr}
+    .timeline{grid-template-columns:1fr}
+    .hero-stats{flex-wrap:wrap;gap:20px}
+    section{padding:72px 0}
+  }
+  .carousel{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;border-bottom:1px solid var(--border);background:#0f1512;border-top-left-radius:inherit;border-top-right-radius:inherit}
+  .carousel-track{display:flex;width:100%;height:100%;transition:transform .5s ease}
+  .carousel-slide{flex:0 0 100%;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#0a0f0c}
+  .carousel-slide iframe,.carousel-slide img{width:100%;height:100%;object-fit:contain;border:0;display:block;background:#000}
+  .carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(10,15,12,.7);border:1px solid var(--border);color:var(--neon);display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(6px);transition:background .2s,border-color .2s,box-shadow .2s;z-index:2}
+  .carousel-btn:hover{background:rgba(57,255,20,.15);border-color:var(--neon);box-shadow:var(--neon-glow)}
+  .carousel-btn.prev{left:12px}
+  .carousel-btn.next{right:12px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <div class="logo">&lt;<span>JOHN_MOURA</span>/&gt;</div>
+    <nav>
+      <ul>
+        <li><a href="#projetos">Projetos</a></li>
+        <li><a href="#processo">Processo</a></li>
+        <li><a href="#tech">Tecnologias</a></li>
+        <li><a href="#depoimentos">Depoimentos</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </nav>
+    <a href="https://wa.me/5586995797113?text=Olá,%20gostaria%20de%20entender%20como%20suas%20automações%20funcionam." class="btn btn-primary" target="_blank" rel="noopener">
+      WhatsApp →
+    </a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="tag reveal"><span class="dot"></span> Disponível para novos projetos</span>
+      <h1 class="reveal d1">Automatize seu negócio com <span class="grad">Inteligência Artificial</span> de verdade.</h1>
+      <p class="lead reveal d2">
+        Sou <strong>John Moura</strong>, especialista em automação de processos e atendimento com IA.
+        Empresas que trabalham comigo param de perder tempo com tarefas manuais e passam a atender, vender e operar no automático.
+      </p>
+      <div class="hero-ctas reveal d3">
+        <a href="https://wa.me/5586995797113?text=Olá,%20gostaria%20de%20entender%20como%20suas%20automações%20funcionam." target="_blank" rel="noopener" class="btn btn-primary">
+          Falar no WhatsApp
+        </a>
+        <a href="#projetos" class="btn btn-ghost">Ver projetos</a>
+      </div>
+      <div class="hero-stats reveal d4">
+        <div class="s"><strong>+50%</strong><span>de produtividade no seu negócio</span></div>
+        <div class="s"><strong>90%</strong><span>das tarefas repetitivas eliminadas</span></div>
+        <div class="s"><strong>24/7</strong><span>Seu negócio funcionando sem você</span></div>
+      </div>
+    </div>
+    <div class="terminal reveal d2" aria-hidden="true">
+      <div class="term-head">
+        <span class="d"></span><span class="d"></span><span class="d g"></span>
+        <span class="title">~/automation/agent.n8n</span>
+      </div>
+      <div class="term-body">
+        <div class="ln"><span class="c"># inicializando agente IA…</span></div>
+        <div class="ln"><span class="k">trigger</span>: whatsapp.message</div>
+        <div class="ln"><span class="k">ai</span>: openai.gpt-4o</div>
+        <div class="ln"><span class="k">action</span>: classify → respond → crm.update</div>
+        <div class="ln"><span class="c"># status</span></div>
+        <div class="ln">✓ leads qualificados: <span class="s">312</span></div>
+        <div class="ln">✓ tempo médio: <span class="s">8s</span></div>
+        <div class="ln">✓ satisfação: <span class="s">98%</span><span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJETOS -->
+<section id="projetos">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Projetos</span>
+      <h2>Case real de automação com IA</h2>
+      <p>Fluxos sob medida que conectam atendimento, vendas e operação.</p>
+    </div>
+    <div class="projects">
+      <!-- Card único: CENNDOR -->
+      <article class="card reveal d1">
+        <div class="carousel" data-carousel>
+          <div class="carousel-track">
+            <div class="carousel-slide">
+              <iframe src="./assets/video.mp4" title="CENNDOR · Sophia" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="carousel-slide">
+              <img src="./assets/fluxo.png" alt="Fluxo n8n da Sophia" loading="lazy" />
+            </div>
+          </div>
+          <button class="carousel-btn prev" aria-label="Anterior" type="button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <button class="carousel-btn next" aria-label="Próximo" type="button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <span class="niche">Clínica · Saúde</span>
+          <h3>CENNDOR · Sophia</h3>
+          <p>A clínica CENNDOR atendia centenas de mensagens por semana no WhatsApp e cada uma dependia de uma secretária para responder. Construí a Sophia, uma IA que absorveu todo o conhecimento da clínica e passou a atender no lugar dela: responde dúvidas, identifica a necessidade do paciente, conduz o agendamento do início ao fim e ainda faz follow-up automaticamente para garantir que nenhum paciente seja esquecido. Quando o caso exige atenção humana, ela reconhece o momento e transfere para a equipe, liberando as secretárias para o que realmente precisa delas. Tudo isso 24 horas por dia, 7 dias por semana.</p>
+        </div>
+
+      </article>
+    </div>
+
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section id="processo" style="background:var(--bg-2)">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Como funciona</span>
+      <h2>Do diagnóstico ao fluxo rodando em produção</h2>
+      <p>Um processo enxuto, claro e mensurável — entrega em semanas, não em meses.</p>
+    </div>
+    <div class="timeline">
+      <div class="step reveal d1">
+        <div class="num">01</div>
+        <h4>Diagnóstico</h4>
+        <p>Mapeio gargalos, tarefas repetitivas e oportunidades de IA no seu negócio.</p>
+      </div>
+      <div class="step reveal d2">
+        <div class="num">02</div>
+        <h4>Arquitetura</h4>
+        <p>Desenho o fluxo no n8n com integrações, gatilhos e prompts otimizados.</p>
+      </div>
+      <div class="step reveal d3">
+        <div class="num">03</div>
+        <h4>Implementação</h4>
+        <p>Construo, testo e conecto WhatsApp, CRM, ChatGPT e demais ferramentas.</p>
+      </div>
+      <div class="step reveal d4">
+        <div class="num">04</div>
+        <h4>Otimização</h4>
+        <p>Monitoro métricas, ajusto prompts e escalo a operação com confiança.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section id="tech">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Soluções</span>
+      <h2>Problemas que resolvo</h2>
+      <p>Negócios eficientes não dependem de esforço manual — dependem de processos bem automatizados.</p>
+    </div>
+    <div class="tech reveal d1">
+      <span class="badge"><span class="ico">01</span> Atendimento lento no WhatsApp</span>
+      <span class="badge"><span class="ico">02</span> Processos manuais e repetitivos</span>
+      <span class="badge"><span class="ico">03</span> Leads sem acompanhamento</span>
+      <span class="badge"><span class="ico">04</span> Agendamentos bagunçados</span>
+      <span class="badge"><span class="ico">05</span> Equipe sobrecarregada</span>
+      <span class="badge"><span class="ico">06</span> Sistemas que não se conversam</span>
+      <span class="badge"><span class="ico">07</span> Respostas demoradas ao cliente</span>
+      <span class="badge"><span class="ico">08</span> Pedidos sem atualização automática</span>
+    </div>
+    <!-- <p style="text-align:center;color:var(--muted);margin-top:28px;font-size:.9rem" class="reveal d2">Ferramentas: n8n · OpenAI · WhatsApp API · Zapier · Supabase · e mais</p> -->
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section id="depoimentos" style="background:var(--bg-2)">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Depoimentos</span>
+      <h2>O que os clientes dizem</h2>
+    </div>
+    <div class="quotes">
+      <div class="quote reveal d1">
+        <p>Oiieee bom dia!!!! Teve um paciente que trabalha no Google (em tecnologia e inovação) q foi a conduta o Catarina.... E ele ficou na dúvida se era ia ou não a Sophia!! Kkk parabéns p vcs!!</p>
+        <div class="who">
+          <div class="av">LB</div>
+          <div><strong>Dra. Laura Barros</strong><span>Clínica · Saúde</span></div>
+        </div>
+      </div>
+      <div class="quote reveal d2">
+        <p>Automatizou o atendimento e qualificação de leads do zero. Resultado imediato.</p>
+        <div class="who">
+          <div class="av">CL</div>
+          <div><strong>Cliente</strong><span>Imobiliária</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTATO -->
+<section id="contato">
+  <div class="container">
+    <div class="contact-card reveal">
+      <span class="eyebrow">Vamos conversar</span>
+      <h2>Pronto para automatizar seu negócio?</h2>
+      <p>Conte seu desafio em uma mensagem rápida. Te respondo com um plano inicial e os próximos passos.</p>
+      <div class="contact-ctas">
+        <a href="https://wa.me/5586995797113?text=Olá,%20gostaria%20de%20entender%20como%20suas%20automações%20funcionam." target="_blank" rel="noopener" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11.9 11.9 0 0012 0C5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6c1.7.9 3.7 1.4 5.8 1.4 6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.5zM12 21.9c-1.8 0-3.6-.5-5.2-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.9 9.9 0 012.1 12C2.1 6.5 6.5 2.1 12 2.1c2.7 0 5.1 1 7 2.9s2.9 4.4 2.9 7c0 5.5-4.4 9.9-9.9 9.9zm5.4-7.4c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1c-.2.3-.8 1-.9 1.2s-.3.2-.6.1c-.3-.1-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.2-.5.1-.2 0-.4 0-.5l-.7-1.7c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.9 2.9 4.6 4 .6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2-.1-.1-.3-.2-.6-.3z"/></svg>
+          WhatsApp Direto
+        </a>
+        <a href="mailto:contato@seunome.com" class="btn btn-ghost">
+          ✉ johnhendsonmorais@gmail.com
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    © 2026 John Moura · Automação & IA
+  <a href="https://www.instagram.com/johnhmoura/" target="_blank" rel="noopener" style="margin-left:16px;color:var(--neon)">
+    Instagram
+  </a>
+  </div>
+</footer>
+
+<a href="https://wa.me/5586995797113?text=Olá,%20gostaria%20de%20entender%20como%20suas%20automações%20funcionam." class="wa-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11.9 11.9 0 0012 0C5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6c1.7.9 3.7 1.4 5.8 1.4 6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.5zM12 21.9c-1.8 0-3.6-.5-5.2-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.9 9.9 0 012.1 12C2.1 6.5 6.5 2.1 12 2.1c2.7 0 5.1 1 7 2.9s2.9 4.4 2.9 7c0 5.5-4.4 9.9-9.9 9.9z"/></svg>
+</a>
+
+<script>
+  document.documentElement.classList.add('js');
+  const yEl = document.getElementById('y');
+  if (yEl) yEl.textContent = new Date().getFullYear();
+
+
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  document.querySelectorAll('[data-carousel]').forEach(car => {
+    const track = car.querySelector('.carousel-track');
+    const slides = car.querySelectorAll('.carousel-slide');
+    let i = 0;
+    const go = (n) => { i = (n + slides.length) % slides.length; track.style.transform = `translateX(-${i*100}%)`; };
+    car.querySelector('.prev').addEventListener('click', () => go(i-1));
+    car.querySelector('.next').addEventListener('click', () => go(i+1));
+  });
+</script>
+</body>
+</html>
